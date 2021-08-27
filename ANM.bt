@@ -1,0 +1,62 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+  FLOAT Z;
+  FLOAT W;
+} VECTOR_4F;
+
+typedef struct {
+  VECTOR_4F X;
+  VECTOR_4F Y;
+  VECTOR_4F Z;
+  VECTOR_4F Pos;
+} MATRIX_4x4;
+
+UINT Time;
+UINT U;
+UINT U;
+UINT U;
+UINT U;
+
+UINT BoneCount;
+
+FLOAT Time;
+FLOAT U;
+FLOAT U;
+FLOAT U;
+FLOAT U;
+FLOAT U;
+FLOAT U;
+
+struct {
+  UINT Unknown;
+  FLOAT Unknown;
+  UINT FrameCount;
+
+  UINT Length;
+  CHAR BoneName[Length];
+  UINT Length;
+  CHAR ParentName[Length];
+  
+  struct {
+    FLOAT Time;
+    MATRIX_4x4 MatrixG;
+    FLOAT U[11];
+  } FRAME[FrameCount];
+} BONE[BoneCount] <optimize=false>;
+
+UINT Count;
+CHAR Name[Count];

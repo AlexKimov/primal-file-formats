@@ -1,0 +1,124 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+  UINT16 X;
+  UINT16 Y;
+  UINT16 Z;
+} VECTOR_3UI16;
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+  FLOAT Z;
+} VECTOR_3F;
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+  FLOAT Z;
+  FLOAT W;
+} VECTOR_4F;
+
+typedef struct {
+  VECTOR_4F X;
+  VECTOR_4F Y;
+  VECTOR_4F Z;
+  VECTOR_4F Pos;
+} MATRIX_4x4;
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+} VECTOR_2F;
+
+  UINT Unknown;
+  UINT Unknown;
+  UINT Unknown;
+  UINT Unknown;
+  UINT Unknown;
+  UINT U;
+  UINT U;
+  UINT FaceCount;
+
+  VECTOR_3F Coordinates;
+  VECTOR_3F Coordinates;
+  VECTOR_3F Coordinates;
+  VECTOR_3F Coordinates;
+
+  UINT VertexCount;
+  UINT IndexCount;
+  UINT MaterialCount;
+  UINT ModelCount;
+  UINT U;
+  UINT U;
+  UINT LastSectionSize;
+
+struct {
+  VECTOR_3F Coordinates;
+  VECTOR_3F Normal;
+  VECTOR_3F Color;
+  VECTOR_2F UV;
+} VERTEX[VertexCount];
+
+struct {
+  VECTOR_3UI16 Index;
+} FACE[FaceCount];
+
+
+struct {
+  UINT Size;
+  UINT U;
+  UINT FaceStartIndex;
+  UINT IndexCount;
+  UINT FaceStartIndex;
+  UINT IndexCount;
+  UINT FaceStartIndex; // ?
+  UINT IndexCount;// ?
+  INT U;
+  INT U;
+  INT U;
+  UINT Length;
+  CHAR Name[Length];
+} MATERIAL[MaterialCount] <optimize=false>;
+
+struct {
+  INT U;
+  MATRIX_4x4 MatrixG;
+  MATRIX_4x4 MatrixL;
+  UINT Length;
+  CHAR Name[Length]; 
+} OBJECT[ModelCount] <optimize=false>;
+
+UINT Count0;
+
+struct {
+  UINT Size;
+  UINT Count;
+  struct {
+    FLOAT U;
+    FLOAT U;
+  } I2[Count];
+
+  UINT Count;
+  struct {
+    UINT Count0;
+    struct { 
+      FLOAT U;
+      FLOAT U;
+    } K[Count0];
+  } I3[Count] <optimize=false>;
+} Ue[Count0] <optimize=false>;
+
+UINT Count;
+CHAR Name[Count];
