@@ -98,7 +98,7 @@ struct {
   MATRIX_4x4 MatrixL;
   UINT Length;
   CHAR Name[Length]; 
-} OBJECT[ModelCount] <optimize=false>;
+} BONE[ModelCount] <optimize=false>;
 
 UINT Count0;
 
