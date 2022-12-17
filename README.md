@@ -18,7 +18,7 @@ File formats and tools for games by Primal Software
 #### Blender
 
 | № | Plugin | Description   |
-| :-- | :------- | :-------  | :-- |
+| :-- | :------- | :-------  | 
 |  **1**  | [_init__.py](https://github.com/AlexKimov/primal-file-formats/blob/master/plugins/blender/io_scene_idragon_mesh/__init__.py)  | Plugin to open mesh files |
 
 
