@@ -42,13 +42,13 @@ typedef struct {
   FLOAT Y;
 } VECTOR_2F;
 
-  UINT Unknown;
+  UINT Offset;
   UINT Unknown;
   UINT Unknown;
   UINT Unknown;
   UINT Unknown;
   UINT U;
-  UINT U;
+  UINT matNumb;
   UINT FaceCount;
 
   VECTOR_3F Coordinates;
@@ -59,7 +59,7 @@ typedef struct {
   UINT VertexCount;
   UINT IndexCount;
   UINT MaterialCount;
-  UINT ModelCount;
+  UINT boneCount;
   UINT U;
   UINT U;
   UINT LastSectionSize;
@@ -79,15 +79,18 @@ struct {
 struct {
   UINT Size;
   UINT U;
+  UINT VertexStartIndex;
+  UINT VertexCount;
+
   UINT FaceStartIndex;
-  UINT IndexCount;
-  UINT FaceStartIndex;
-  UINT IndexCount;
-  UINT FaceStartIndex; // ?
-  UINT IndexCount;// ?
+  UINT FaceVertexCount;
+  UINT FaceCount;
+ 
+  UINT Unknownt;// ?
   INT U;
   INT U;
   INT U;
+
   UINT Length;
   CHAR Name[Length];
 } MATERIAL[MaterialCount] <optimize=false>;
@@ -98,7 +101,7 @@ struct {
   MATRIX_4x4 MatrixL;
   UINT Length;
   CHAR Name[Length]; 
-} BONE[ModelCount] <optimize=false>;
+} BONE[boneCount] <optimize=false>;
 
 UINT Count0;
 
