@@ -26,3 +26,5 @@ File formats and tools for games by Primal Software
     1. Install Blender (~3.3).
     2. Go to Preferencies - Add-ons section - Testing. Check plugin to activate.
     3. Go to menu File - Import - "Plugin" and choose .mesh file to import.
+
+![Dragon](dragon.png)
