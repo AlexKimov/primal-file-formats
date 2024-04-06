@@ -379,27 +379,27 @@ def load_msh_file(msh_filename, context, dir, BATCH_LOAD=False):
         pass
         
     # bones
-    # skeleton = bpy.data.armatures.new("armature")
-    # skeleton.display_type = 'STICK'    
-    # obj = bpy.data.objects.new("skeleton", skeleton)        
-    # bpy.context.scene.collection.objects.link(obj)    
-    # bpy.context.view_layer.objects.active = obj
+    skeleton = bpy.data.armatures.new("armature")
+    skeleton.display_type = 'STICK'    
+    obj = bpy.data.objects.new("skeleton", skeleton)        
+    bpy.context.scene.collection.objects.link(obj)    
+    bpy.context.view_layer.objects.active = obj
     
-    # bpy.ops.object.mode_set(mode = 'EDIT', toggle = False)
+    bpy.ops.object.mode_set(mode = 'EDIT', toggle = False)
     
-    # for bone in model.bones:
-        # nbone = skeleton.edit_bones.new(bone.name) 
-        # nbone.tail = (0, 0, 1)        
+    for bone in model.bones:
+        nbone = skeleton.edit_bones.new(bone.name) 
+        nbone.tail = (0, 0, 1)        
 
-        # if bone.parentIndex >= 0:     
-            # matrx = mathutils.Matrix(bone.matrix.getStorage())
-            # parent_matrx = mathutils.Matrix(skeleton.edit_bones[bone.parentIndex].matrix) 
-            # nbone.matrix = matrx * parent_matrx 
-            # nbone.parent = skeleton.edit_bones[bone.parentIndex]
-        # else:
-            # nbone.matrix = bone.matrix.getStorage()  
+        if bone.parentIndex >= 0:     
+            matrx = mathutils.Matrix(bone.matrix.getStorage())
+            parent_matrx = mathutils.Matrix(skeleton.edit_bones[bone.parentIndex].matrix) 
+            nbone.matrix = matrx * parent_matrx 
+            nbone.parent = skeleton.edit_bones[bone.parentIndex]
+        else:
+            nbone.matrix = bone.matrix.getStorage()  
 
-    # bpy.ops.object.mode_set(mode = 'OBJECT', toggle = False)         
+    bpy.ops.object.mode_set(mode = 'OBJECT', toggle = False)         
 
     polygons = ob.data.polygons
     polygons.foreach_set('use_smooth', [True] * len(polygons))  
