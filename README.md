@@ -21,6 +21,12 @@ File formats and tools for games by Primal Software
 | :-- | :------- | :-------  | 
 |  **1**  | [_init__.py](https://github.com/AlexKimov/primal-file-formats/blob/master/plugins/blender/io_scene_idragon_mesh/__init__.py)  | Plugin to open mesh files |
 
+#### Noesis
+
+| № | Plugin | Description   |
+| :-- | :------- | :-------  | 
+|  **1**  | [fmt_idragon_msh.py](plugins/noesis/fmt_idragon_msh.py)  | Plugin to open mesh files |
+
 
     How to:
     1. Install Blender (~3.3).
