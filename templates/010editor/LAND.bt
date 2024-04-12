@@ -1,0 +1,55 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+uchar magic[10];
+uint unk;
+uint unk;
+uint unk;
+uint16 unk;
+uint16 unkt;
+uint16 unk;
+uint16 heightmapSize;
+
+uint code;
+uint16 size;
+uint16 pnumber;
+uint16 unk;
+local int points = pnumber;
+byte data[points*points*2];
+uint code;
+
+uint code;
+uint16 unk;
+uint16 power;
+local uint w = Pow(2, power)/8, h = Pow(2, power)/8;
+Printf("%d", w);
+struct {
+  while (true)
+  {
+     struct {
+       byte image[w*h];
+     } MIP;
+     w = w/2;
+     h = h/2;
+     if (w <= 1) break;
+  };
+} MIP_MAPS;
+
+uint code;
+
+uint code;
+uint16 unk;
+uint16 unk2;
+local int upoints = unk2;
+byte data2[upoints*upoints];  
+uint code;

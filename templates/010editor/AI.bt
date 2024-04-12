@@ -1,0 +1,26 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+uint unk;
+float unk;
+uint unk;
+uint unk;
+float unk;
+float unk;
+
+struct {
+  int unk;
+  int unk;
+  int a;
+  int b;
+} b[1000];

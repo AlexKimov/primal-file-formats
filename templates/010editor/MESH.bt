@@ -48,7 +48,7 @@ typedef struct {
   UINT Unknown;
   UINT Unknown;
   UINT U;
-  UINT matNumb;
+  UINT Unknow;
   UINT FaceCount;
 
   VECTOR_3F Coordinates;
@@ -58,7 +58,7 @@ typedef struct {
 
   UINT VertexCount;
   UINT IndexCount;
-  UINT MaterialCount;
+  UINT MeshCount;
   UINT boneCount;
   UINT U;
   UINT U;
@@ -78,25 +78,26 @@ struct {
 
 struct {
   UINT Size;
-  UINT U;
+  UINT type;
+
   UINT VertexStartIndex;
   UINT VertexCount;
 
-  UINT FaceStartIndex;
-  UINT FaceVertexCount;
-  UINT FaceCount;
+  UINT FaceVertexStartIndex;
+  UINT FaceVertexNum;
+  UINT FaceNum;
  
-  UINT Unknownt;// ?
-  INT U;
-  INT U;
-  INT U;
+  INT boneIndex;
+  INT boneIndex;
+  INT boneIndex;
+  INT boneIndex;
 
   UINT Length;
   CHAR Name[Length];
-} MATERIAL[MaterialCount] <optimize=false>;
+} MESH[MeshCount] <optimize=false>;
 
 struct {
-  INT U;
+  INT parentIndex;
   MATRIX_4x4 MatrixG;
   MATRIX_4x4 MatrixL;
   UINT Length;

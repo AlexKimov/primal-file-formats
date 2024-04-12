@@ -25,7 +25,7 @@ typedef struct {
   VECTOR_4F Pos;
 } MATRIX_4x4;
 
-UINT Time;
+UINT size;
 UINT U;
 UINT U;
 UINT U;
