@@ -10,13 +10,22 @@
 |  **1**  | MESH | [MESH.bt](templates/010editor/MESH.bt)  | трехмерные модели | 
 |  **2**  | ANM | [ANM.bt](templates/010editor/ANM.bt)  | анимации для трехмерных моделей | 
 
+    Как использовать шаблоны  010Editor
+    0. Установить 010Editor.
+    1. Открыть нужный файл игры.
+    2. Применить шаблон через меню Templates-Run template.   
 ## Инструменты
 
 #### 010editor
 
 | № | Скрипт | Описание  |
 | :-- | :------- | :-------  | 
-|  **1**  | [Decipher_dat_dsc.1sc](scripts/Decipher_dat_dsc.1sc)  | Расшифровка/Зашифровка .dat файлов игры |
+|  **1**  | [Decipher_dat_dsc.1sc](scripts/Decipher_dat_dsc.1sc)  | Расшифровка/Зашифровка .dat файлов игры Глаз Дракона (2002) |
+
+    Как использовать скрипты  010Editor
+    0. Установить 010Editor.
+    1. Открыть нужный .dat файл.
+    2. Применить скрипт через меню Script-Run script. 
 
 #### Blender
 
