@@ -4,18 +4,32 @@
 
 ## Форматы
 
+#### 1. Глаз Дракона (2002)
 | № | Format/Ext  | Template (010 Editor) |  Description   |
 | :-- | :------- | :-- |  :-- | 
-|  **1**  | MESH | [MESH.bt](https://github.com/AlexKimov/primal-file-formats/blob/master/templates/010editor/MESH.bt)  | трехмерные модели | 
-|  **2**  | ANM | [ANM.bt](https://github.com/AlexKimov/primal-file-formats/blob/master/templates/010editor/ANM.bt)  | анимации для трехмерных моделей | 
+|  **1**  | MESH | [MESH.bt](templates/010editor/MESH.bt)  | трехмерные модели | 
+|  **2**  | ANM | [ANM.bt](templates/010editor/ANM.bt)  | анимации для трехмерных моделей | 
 
 ## Инструменты
+
+#### Blender
+
+| № | Плагин | Описание   |
+| :-- | :------- | :-------  | 
+|  **1**  | [__init__.py](plugins/blender/io_scene_idragon_mesh/__init__.py)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) |
+
+    Как установить плагин Blender
+    1. Скопировать папку с плагином в папку Blender/x.x/scripts/addons....
+    2. Запустить Blender, зайти в настройки (клавиши Ctrl + Alt + U или в меню Edit-Preferencies).
+    3. В списке слева выбрать addons, найти плагин в списке и активировать его, нажав на квадрат.
+    4. Открыть файл через меню **File-Import**, справа в поле настроек можно написать название текстуры, чтобы плагин сам загрузил текстуру, 
+   она должна быть в одной папке с файлом модели, если нет, то зайти в Shader Editor и задать файл вручную. 
 
 #### Noesis
 
 | № | Плагин | Описание   |
 | :-- | :------- | :-------  | 
-|  **1**  | [fmt_idragon_msh.py](plugins/noesis/fmt_idragon_msh.py)  | Просмотр файлов моделей mesh игры Глаз Дракона (2003) |
+|  **1**  | [fmt_idragon_msh.py](plugins/noesis/fmt_idragon_msh.py)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) |
 
     Как использовать Noesis плагины
     1. Скачать Noesis https://richwhitehouse.com/index.php?content=inc_projects.php&showproject=91 .
