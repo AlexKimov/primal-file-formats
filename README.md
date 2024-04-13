@@ -9,6 +9,7 @@
 | :-- | :------- | :-- |  :-- | 
 |  **1**  | MESH | [MESH.bt](templates/010editor/MESH.bt)  | трехмерные модели | 
 |  **2**  | ANM | [ANM.bt](templates/010editor/ANM.bt)  | анимации для трехмерных моделей | 
+|  **3**  | LAND | [ANM.bt](templates/010editor/LAND.bt)  | Поверхность уровня (карта высот) | 
 
     Как использовать шаблоны  010Editor
     0. Установить 010Editor.
