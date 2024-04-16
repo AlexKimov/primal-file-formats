@@ -1,4 +1,5 @@
 from inc_noesis import *
+import os
 
 
 def registerNoesisTypes():
@@ -37,11 +38,23 @@ class prsArchiveFile:
             rec = PRSFileRec(self.reader)
             rec.read()    
             self.fileRecs.append(rec)
-  
+
+    def decypherFileData(self, data):
+        key =  [ord(char) for char in "GBDFYTNE"]
+        data = data[2:]
+        for index, byte in enumerate(data):
+            data[index] = byte ^ key[index % 8]
+            
+        return data
+        
     def getUnpackedFiles(self):        
         for rec in self.fileRecs:
             self.reader.seek(rec.offset, NOESEEK_ABS)
             data = self.reader.readBytes(rec.size)
+            _, file_extension = os.path.splitext(rec.filename)
+            extensions = (".fir", ".dat", ".city", ".dsc")
+            if file_extension in extensions:
+                data = self.decypherFileData(data)
             file = PRSFile(rec.filename, data)              
             yield file         
     
