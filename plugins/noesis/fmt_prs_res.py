@@ -1,9 +1,8 @@
 from inc_noesis import *
-import os
 
 
 def registerNoesisTypes():
-    handle = noesis.register("I of the Dragon (2002) / Besieger (2004) archive file", ".res")
+    handle = noesis.register("I of the Dragon (2002) / Besieger (2004) archive file", ".ress")
     noesis.setHandlerExtractArc(handle, prsExtractRESFile)
     
     return 1
@@ -15,7 +14,8 @@ class PRSFileRec:
         self.size = 0
         self.offset = 0        
         
-    def read(self, filereader):     
+    def read(self, filereader):  
+        length = filereader.readUInt()      
         self.filename = noeAsciiFromBytes(filereader.readBytes(length))
         self.offset = filereader.readUInt()       
         self.size = filereader.readUInt()
@@ -23,11 +23,11 @@ class PRSFileRec:
     
 class PRSFile:    
     def __init__(self,  filename = "", data = None):
-        self.filenem = filename
+        self.filename = filename
         self.data = data
 
 
-class prsArchiveFile:  
+class PRSArchiveFile:  
     def __init__(self, filereader):
         self.reader = filereader
         self.fileRecs = []
@@ -35,26 +35,14 @@ class prsArchiveFile:
     def readFileRecs(self):
         self.fileNum = self.reader.readUInt()  
         for _ in range(self.fileNum):
-            rec = PRSFileRec(self.reader)
-            rec.read()    
+            rec = PRSFileRec()
+            rec.read(self.reader)    
             self.fileRecs.append(rec)
-
-    def decypherFileData(self, data):
-        key =  [ord(char) for char in "GBDFYTNE"]
-        data = data[2:]
-        for index, byte in enumerate(data):
-            data[index] = byte ^ key[index % 8]
-            
-        return data
         
     def getUnpackedFiles(self):        
         for rec in self.fileRecs:
             self.reader.seek(rec.offset, NOESEEK_ABS)
             data = self.reader.readBytes(rec.size)
-            _, file_extension = os.path.splitext(rec.filename)
-            extensions = (".fir", ".dat", ".city", ".dsc")
-            if file_extension in extensions:
-                data = self.decypherFileData(data)
             file = PRSFile(rec.filename, data)              
             yield file         
     
