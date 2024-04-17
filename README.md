@@ -93,7 +93,7 @@
 | № | Плагин | Описание   | Статус |
 | :-- | :------- | :-------  | :-------  | 
 |  **1**  | [fmt_idragon_msh.py](plugins/noesis/fmt_idragon_msh.py)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) | +модели +текстуры +кости +-анимации |
-|  **2**  | [fmt_idragon_msh.py](plugins/noesis/fmt_prs_res.py)  | Распаковка архивов .res игр Глаз Дракона и Осада | Все архивы |
+|  **2**  | [fmt_prs_res.py](plugins/noesis/fmt_prs_res.py)  | Распаковка архивов .res игр Глаз Дракона и Осада | Все архивы |
 
     Как использовать Noesis плагины
     1. Скачать Noesis https://richwhitehouse.com/index.php?content=inc_projects.php&showproject=91 .

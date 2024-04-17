@@ -2,7 +2,7 @@ from inc_noesis import *
 
 
 def registerNoesisTypes():
-    handle = noesis.register("I of the Dragon (2002) / Besieger (2004) archive file", ".ress")
+    handle = noesis.register("I of the Dragon (2002) / Besieger (2004) archive file", ".res")
     noesis.setHandlerExtractArc(handle, prsExtractRESFile)
     
     return 1
