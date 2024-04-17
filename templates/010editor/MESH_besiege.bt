@@ -1,0 +1,73 @@
+//------------------------------------------------
+//--- 010 Editor v12.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+uint a;
+uint b; 
+float c[12];
+
+uint num;
+
+struct {
+  float bb[10]; 
+} vertex[num];
+
+uint size;
+local float fNum = size / 3;
+struct {
+  uint16 index[3]; 
+
+  if (index[2] > 8790)
+      Printf("%d ", index[0]);
+} face[fNum] <optimize=false>;
+
+local uint is;
+uint num;
+struct {
+  uint num;
+  uint vertexNum;
+  uint faceNum;
+
+  uint length;
+  char name[length];
+  uint num;
+
+  uint16 boneIndex[num];
+} mesh[num] <optimize = false>;
+
+uint num;
+struct {
+  uint length;
+  char name[length];
+  int parentIndex;
+  float a[16];
+  float b[16];
+} bone[num] <optimize = false>;
+
+uint size;
+uint num;
+uint size;
+uint num2;
+
+struct {
+  float aa[2];
+} s[num2];
+
+uint size;
+uint num;
+
+struct {
+  float bb[3];
+} g[num];
+
+uint length;
+char name[length];

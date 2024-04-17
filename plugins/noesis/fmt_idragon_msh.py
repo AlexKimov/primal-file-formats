@@ -1,12 +1,16 @@
 from inc_noesis import *
 import os
 
+
 ANIM_EVAL_FRAMERATE = 20.0
+IDRAGON_MODEL_TYPE = 0
+BESIEGER_MODEL_TYPE = 1
+BESIEGER_MAGIC_NUMBER = 537068291
 
 
 def registerNoesisTypes():
     handle = noesis.register( \
-        "Eye of the Dragon (2002) model with animations", ".msh")
+        "I of the Dragon (2002)/BESIEGER (2004) model with animations", ".msh")
         
     noesis.setHandlerTypeCheck(handle, idModelCheckType)
     noesis.setHandlerLoadModel(handle, idModelLoadModel)
@@ -141,19 +145,26 @@ class Vector2F:
         return (self.x, self.y)  
         
 
-class IDBone: 
-    def __init__(self):
+class PRBone: 
+    def __init__(self, type):
+        self.type = type
         self.parentIndex = 0
         self.matrix = Matrix4x4()
         self.matrix2 = Matrix4x4()
         self.name = ""
         self.transMatrix = None
         
-    def read(self, reader):  
-        self.parentIndex = struct.unpack('i', reader.read(4))[0]  
-        self.matrix.read(reader)
-        self.matrix2.read(reader)
-        self.name = CString().read(reader)             
+    def read(self, reader): 
+        if self.type == IDRAGON_MODEL_TYPE:    
+            self.parentIndex = struct.unpack('i', reader.read(4))[0]  
+            self.matrix.read(reader)
+            self.matrix2.read(reader)
+            self.name = CString().read(reader)
+        else:
+            self.name = CString().read(reader)         
+            self.parentIndex = struct.unpack('i', reader.read(4))[0]  
+            self.matrix.read(reader)
+            self.matrix2.read(reader)                   
 
     def getTransMat(self):
         mat = NoeMat44()
@@ -165,39 +176,53 @@ class IDBone:
         return mat.toMat43()
     
     
-class IDMesh: 
-    def __init__(self):
+class PRMesh: 
+    def __init__(self, type):
+        self.modelType = type
         self.textureName = ""
         self.vertexStartIndex = 0 
         self.vertexNum = 0
         self.faceStartIndex = 0 
         self.faceVertexNum = 0
         self.faceNum = 0
-        self.boneIndex = 0
-        self.type = 0
+        self.boneIndexNum = 0
         self.boneIndexes = []
         
-    def read(self, reader): 
-        reader.seek(4, os.SEEK_CUR)
+    def read(self, reader):   
+        reader.seek(4, NOESEEK_REL)
+        if self.modelType == IDRAGON_MODEL_TYPE:
+            self.type, self.vertexStartIndex, self.vertexNum, self.faceStartIndex, self.faceVertexNum, self.faceNum = \
+                struct.unpack('=6I', reader.read(24)) 
+            self.boneIndexes = struct.unpack('=4i', reader.read(16)) 
+        else:
+            self.vertexNum = reader.readUInt()
+            self.faceNum = int(reader.readUInt())
         
-        self.type, self.vertexStartIndex, self.vertexNum, self.faceStartIndex, self.faceVertexNum, self.faceNum = \
-            struct.unpack('=6I', reader.read(24)) 
-        self.boneIndexes = struct.unpack('=4i', reader.read(16)) 
-        self.textureName = CString().read(reader)  
-       
+        self.textureName = CString().read(reader)
 
-class IDVertex: 
-    def __init__(self):
+        if self.modelType != IDRAGON_MODEL_TYPE:        
+            self.boneIndexNum = reader.readUInt()        
+            self.boneIndexes = struct.unpack('H'*self.boneIndexNum, reader.read(self.boneIndexNum*2)) 
+            
+
+class PRVertex: 
+    def __init__(self, type):
+        self.type = type
         self.coordinates = Vector3F()
         self.normal = Vector3F()
         self.color = Vector3F()        
         self.uv = Vector2F()
         
     def read(self, reader):
-        self.coordinates.read(reader)
-        self.normal.read(reader)
-        self.color.read(reader)
-        self.uv.read(reader)            
+        self.coordinates.read(reader)       
+        if self.type == IDRAGON_MODEL_TYPE: 
+            self.normal.read(reader)        
+            self.color.read(reader)
+            self.uv.read(reader)
+        else:
+            self.normal.read(reader)
+            reader.seek(8, NOESEEK_REL)            
+            self.uv.read(reader)
    
    
 class IDModelBoneAnimationFrames:  
@@ -266,8 +291,9 @@ class IDModelAnimations:
         self.readBonesAnimationFrames()  
             
 
-class IDCharacterModel: 
+class PSModel: 
     def __init__(self, reader):
+        self.type = 0
         self.reader = reader
         self.faceCount = 0
         self.vertexCount = 0
@@ -281,42 +307,76 @@ class IDCharacterModel:
         self.name = ""      
         
     def readHeader(self, reader):
-        reader.seek(28, os.SEEK_CUR)
+        if self.reader.readUInt() == BESIEGER_MAGIC_NUMBER:
+            self.type = BESIEGER_MODEL_TYPE
+            reader.seek(56, NOESEEK_ABS)
+        else:
+            self.type = IDRAGON_MODEL_TYPE
+            reader.seek(24, NOESEEK_REL)
                
     def readGeometryData(self, reader):
-        self.faceCount = struct.unpack('I', reader.read(4))[0]
+        if self.type == BESIEGER_MODEL_TYPE:      
+            self.vertexCount = reader.readUInt()
+           
+            for i in range(self.vertexCount):
+                vertex = PRVertex(self.type) 
+                vertex.read(reader)
+                self.vertexAttributes.append(vertex)  
+    
+            self.faceCount = int(reader.readUInt() / 3)
+           
+            for i in range(self.faceCount):
+                face = Vector3UI16() 
+                face.read(reader)
+                self.faces.append(face)                 
+        else:        
+            self.faceCount = struct.unpack('I', reader.read(4))[0]
         
-        reader.seek(48, os.SEEK_CUR)     
+            reader.seek(48, os.SEEK_CUR)     
         
-        self.vertexCount, self.faceIndexCount, self.matCount, self.boneCount = \
-            struct.unpack('=IIII', reader.read(16))  
+            self.vertexCount, self.faceIndexCount, self.matCount, self.boneCount = \
+                struct.unpack('=IIII', reader.read(16))  
         
-        reader.seek(12, os.SEEK_CUR)
+            reader.seek(12, os.SEEK_CUR)
         
-        for i in range(self.vertexCount):
-            vertex = IDVertex() 
-            vertex.read(reader)
-            self.vertexAttributes.append(vertex)   
+            for i in range(self.vertexCount):
+                vertex = PRVertex(self.type) 
+                vertex.read(reader)
+                self.vertexAttributes.append(vertex)                     
         
-        for i in range(self.faceCount):
-            face = Vector3UI16() 
-            face.read(reader)
-            self.faces.append(face)     
+            for i in range(self.faceCount):
+                face = Vector3UI16() 
+                face.read(reader)
+                self.faces.append(face)     
             
     def readMeshes(self, reader): 
-        for i in range(self.matCount):
-            mesh = IDMesh() 
+        if self.type == BESIEGER_MODEL_TYPE:
+
+            self.matCount = self.reader.readUInt() 
+        
+        index1 = 0
+        index2 = 0
+      
+        for i in range(self.matCount):        
+            mesh = PRMesh(self.type) 
             mesh.read(reader)
+            mesh.faceStartIndex = index1
+            mesh.vertexStartIndex = index2
             self.meshes.append(mesh)        
+            index1 += mesh.faceNum
+            index2 += mesh.vertexNum
 
     def readSkeleton(self, reader): 
+        if self.type == BESIEGER_MODEL_TYPE:
+            self.boneCount = self.reader.readUInt() 
+            
         for i in range(self.boneCount):
-            bone = IDBone() 
+            bone = PRBone(self.type) 
             bone.read(reader)
             self.bones.append(bone)             
         
     def readModelData(self, reader):
-        self.readGeometryData(reader)    
+        self.readGeometryData(reader)         
         self.readMeshes(reader)      
         self.readSkeleton(reader)        
         
@@ -332,9 +392,9 @@ def idModelCheckType(data):
 
 def idModelLoadModel(data, mdlList):
     noesis.logPopup()
-    model = IDCharacterModel(NoeBitStream(data))
+    model = PSModel(NoeBitStream(data))
     model.read()
-    
+
     ctx = rapi.rpgCreateContext()
 
     #transMatrix = NoeMat43( ((1, 0, 0), (0, 0, 1), (0, 1, 0), (0, 0, 0)) ) 
@@ -347,53 +407,57 @@ def idModelLoadModel(data, mdlList):
     path = os.path.dirname(noesis.getSelectedFile()) + "/"        
 
     for index, mesh in enumerate(model.meshes): 
-        
+ 
         matName = "{} {}".format("mat", index)
         name, _ = os.path.splitext(path + mesh.textureName)
+
         filename = name + ".dds"
         if not os.path.isfile(filename):
             filename = name + ".tga"
             
         mat = NoeMaterial(matName, filename)
         rapi.rpgSetMaterial(matName) 
-        # mat.setDiffuseColor(NoeVec4(mat.diffuse.getStorage()))
-        # mat.setAmbientColor(NoeVec4(mat.ambient.getStorage()))
-        # mat.setSpecularColor(NoeVec4(mat.specular.getStorage()))
-        
+      
         texture = rapi.loadExternalTex(filename)
 
         if texture is None:
             texture = NoeTexture(filename, 0, 0, bytearray())
         mats.append(mat) 
         textures.append(texture) 
-        
-        meshName = "{} {}".format("mesh", index)         
-        rapi.rpgSetName(meshName)
-            
-        faceStartIndex = int(mesh.faceStartIndex / 3)
-        for face in model.faces[faceStartIndex: (faceStartIndex + mesh.faceNum)]:               
-            rapi.immBegin(noesis.RPGEO_TRIANGLE)
-            for i in range(3):              
-                vIndex = face.getStorage()[i] 
+             
+        if model.type == BESIEGER_MODEL_TYPE: 
+            mesh.faceNum = int(mesh.faceNum / 3)
+            faceStartIndex = int(mesh.faceStartIndex / 3)
+        else:
+            faceStartIndex = mesh.faceStartIndex
+   
+        rapi.immBegin(noesis.RPGEO_TRIANGLE)
+        bi = [bind for bind in mesh.boneIndexes if bind > -1]
+        # fi = int(mesh.faceNum / len(bi)) if len(bi) > 1 else 0
+        # indx = 0
+                
+        for face in model.faces[faceStartIndex: (faceStartIndex + mesh.faceNum)]:                             
+            for i in range(3):
+                vIndex = face.getStorage()[i]
+                if model.type == BESIEGER_MODEL_TYPE:            
+                    vIndex += mesh.vertexStartIndex                   
                 rapi.immUV2(model.vertexAttributes[vIndex].uv.getStorage())  
                 rapi.immNormal3(model.vertexAttributes[vIndex].normal.getStorage())  
                 #rapi.immColor3(model.vertexAttributes[vIndex].color.getStorage())
-                
-                bi = []               
-                bi = [bind for bind in mesh.boneIndexes if bind > -1]
-                wh = [1/len(bi)]*len(bi)   
-                
-                rapi.immBoneIndex(bi)                
-                rapi.immBoneWeight(wh)                     
-                rapi.immVertex3(model.vertexAttributes[vIndex].coordinates.getStorage())   
-            rapi.immEnd() 
-                        
-    
+                #rapi.immBoneIndex(bi)                                     
+                #rapi.immBoneWeight([1/len(bi)]*len(bi))               
+                rapi.immVertex3(model.vertexAttributes[vIndex].coordinates.getStorage())            
+            # if fi and not ((findex + 1) % fi):
+                # indx += 1    
+            # if indx == len(bi):
+                # indx = len(bi) - 1            
+        rapi.immEnd()       
+                           
     # show skeleton
     bones = []
     for index, bone in enumerate(model.bones):
         boneName = bone.name
-        
+ 
         if bone.parentIndex >= 0:
             parentMat = model.bones[bone.parentIndex].transMatrix
             boneMat = bone.getTransMat() * parentMat
