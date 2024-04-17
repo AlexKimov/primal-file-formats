@@ -154,3 +154,6 @@ File formats and tools for games by Primal Software.
 |  **1**  | [fmt_idragon_msh.py](plugins/noesis/fmt_idragon_msh.py)  | Plugin to open mesh files |
 
 ![Dragon](dragon.png)
+![Jetman](jetman.jpg)
+![Zlodeika](zlodeika.jpg)
+
