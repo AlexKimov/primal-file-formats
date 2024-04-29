@@ -1,17 +1,24 @@
 from inc_noesis import *
 import os
+import noewin
+import noewinext
 
 
 ANIM_EVAL_FRAMERATE = 20.0
 IDRAGON_MODEL_TYPE = 0
 BESIEGER_MODEL_TYPE = 1
+IDRAGON_ANIMATION_TYPE = 3
+BESIEGER_ANIMATION_TYPE = 4
 BESIEGER_MAGIC_NUMBER = 537068291
+BESIEGER_ANIMATION_MAGIC_NUMBER = 537068832
 
 
 def registerNoesisTypes():
     handle = noesis.register( \
         "I of the Dragon (2002)/BESIEGER (2004) model with animations", ".msh")
         
+    noesis.addOption(handle, "-nogui", "disables UI", 0) 
+    
     noesis.setHandlerTypeCheck(handle, idModelCheckType)
     noesis.setHandlerLoadModel(handle, idModelLoadModel)
         
@@ -205,55 +212,75 @@ class PRMesh:
             self.boneIndexes = struct.unpack('H'*self.boneIndexNum, reader.read(self.boneIndexNum*2)) 
             
 
-class PRVertex: 
+class PRSVertex: 
     def __init__(self, type):
         self.type = type
         self.coordinates = Vector3F()
-        self.normal = Vector3F()
-        self.color = Vector3F()        
+        self.weights = Vector3F() if self.type == IDRAGON_MODEL_TYPE else [0]*4
+        self.normal = Vector3F()        
+        self.boneIndexes = [0]*4       
         self.uv = Vector2F()
         
     def read(self, reader):
         self.coordinates.read(reader)       
         if self.type == IDRAGON_MODEL_TYPE: 
-            self.normal.read(reader)        
-            self.color.read(reader)
+            self.weights.read(reader)        
+            self.normal.read(reader)
             self.uv.read(reader)
         else:
-            self.normal.read(reader)
-            reader.seek(8, NOESEEK_REL)            
+            weight = reader.readFloat();
+            self.weights = [weight]*4;
+            if weight != 1:
+                self.weights[1] = 1 - weight;
+            self.boneIndexes = struct.unpack('4B', reader.readBytes(4))
+            self.normal.read(reader)     
             self.uv.read(reader)
    
    
-class IDModelBoneAnimationFrames:  
-    def __init__(self, reader):  
+class PRSModelBoneAnimationFrames:  
+    def __init__(self, reader, type):
+        self.type = type     
         self.reader = reader
         self.time = 0
         self.matrix = Matrix4x4()
+        self.rotation = Vector4F()
+        self.position = Vector3F()
         
     def read(self):
-        self.time = self.reader.readFloat()  
-        self.matrix.read(self.reader)
-        self.reader.seek(44, NOESEEK_REL)
+        if self.type == BESIEGER_ANIMATION_TYPE:
+            self.rotation.read(self.reader)
+            self.position.read(self.reader)
+        else:
+            self.time = self.reader.readFloat()  
+            self.matrix.read(self.reader)
+            self.reader.seek(44, NOESEEK_REL)
 
 
-class IDModelBoneAnimation:  
-    def __init__(self, reader): 
+class PRSModelBoneAnimation:  
+    def __init__(self, reader, type):
+        self.type = type    
         self.reader = reader
+        self.parentIndex = -1
         self.num = 0
         self.frames = []
         self.boneName = ""
         self.parentName = ""
       
-    def readHeader(self):
-        self.reader.seek(8, NOESEEK_REL)  
-        self.num = self.reader.readUInt()      
-        self.boneName = CString().read(self.reader)  
-        self.parentName = CString().read(self.reader)      
+    def readHeader(self):   
+        if self.type == BESIEGER_ANIMATION_TYPE:
+            self.boneName = CString().read(self.reader) 
+            self.parentIndex = self.reader.readInt() 
+            self.reader.seek(4, NOESEEK_REL)
+            self.num = self.reader.readUInt() 
+        else:
+            self.reader.seek(8, NOESEEK_REL)  
+            self.num = self.reader.readUInt()      
+            self.boneName = CString().read(self.reader)  
+            self.parentName = CString().read(self.reader)      
       
     def readFrames(self):   
         for i in range(self.num):
-            boneFrames = IDModelBoneAnimationFrames(self.reader)
+            boneFrames = PRSModelBoneAnimationFrames(self.reader, self.type)
             boneFrames.read()
             self.frames.append(boneFrames)           
         
@@ -262,33 +289,41 @@ class IDModelBoneAnimation:
         self.readFrames()
         
      
-class IDModelAnimations:
+class PRSModelAnimations:
     def __init__(self):
         self.reader = None
         self.boneAnimations = []
         self.num = 0
-        self.animationLength = 0
+        self.time = 0
         self.filename = ""
+        self.type = -1
         
     def readHeader(self):
-        self.reader.seek(20, NOESEEK_ABS)
-        self.num = self.reader.readUInt()
-        self.animationLength = self.reader.readUInt()
-        
+        self.type = BESIEGER_ANIMATION_TYPE if self.reader.readUInt() == BESIEGER_ANIMATION_MAGIC_NUMBER \
+            else IDRAGON_ANIMATION_TYPE
+            
+        if self.type == BESIEGER_ANIMATION_TYPE:
+            self.time = self.reader.readUInt()        
+            self.num = self.reader.readUInt()        
+        else:         
+            self.reader.seek(20, NOESEEK_ABS)
+            self.num = self.reader.readUInt()
+            self.time = self.reader.readUInt()
+            self.reader.seek(52, NOESEEK_ABS)
+            
     def readBonesAnimationFrames(self):
-        self.reader.seek(52, NOESEEK_ABS)
         for i in range(self.num):
-            boneAnims = IDModelBoneAnimation(self.reader)
+            boneAnims = PRSModelBoneAnimation(self.reader, self.type)
             boneAnims.read()
-            self.boneAnimations.append(boneAnims)   
+            self.boneAnimations.append(boneAnims)            
 
     def load(self, filename): 
         with open(filename, "rb") as filereader:
             self.reader = NoeBitStream(filereader.read())           
             self.filename = filename 
           
-        self.readHeader()  
-        self.readBonesAnimationFrames()  
+            self.readHeader()  
+            self.readBonesAnimationFrames()            
             
 
 class PSModel: 
@@ -319,7 +354,7 @@ class PSModel:
             self.vertexCount = reader.readUInt()
            
             for i in range(self.vertexCount):
-                vertex = PRVertex(self.type) 
+                vertex = PRSVertex(self.type) 
                 vertex.read(reader)
                 self.vertexAttributes.append(vertex)  
     
@@ -340,7 +375,7 @@ class PSModel:
             reader.seek(12, os.SEEK_CUR)
         
             for i in range(self.vertexCount):
-                vertex = PRVertex(self.type) 
+                vertex = PRSVertex(self.type) 
                 vertex.read(reader)
                 self.vertexAttributes.append(vertex)                     
         
@@ -376,14 +411,104 @@ class PSModel:
             self.bones.append(bone)             
         
     def readModelData(self, reader):
-        self.readGeometryData(reader)         
-        self.readMeshes(reader)      
+        self.readGeometryData(reader)        
+        self.readMeshes(reader)         
         self.readSkeleton(reader)        
         
     def read(self):
         self.readHeader(self.reader)         
         self.readModelData(self.reader)           
+
+
+class PRSViewSettingsDialogWindow:
+    def __init__(self):
+        self.options = {"AnimationFile": "", "TextureFolder": ""}
+        self.isCanceled = True
+        self.animationListBox = None
+        self.anmPathEditBox = None
+        self.texturePathEditBox = None
+        self.actorFileNameEditBox = None
+        self.anmDir = ""
+        
+    def buttonGetAnimationListOnClick(self, noeWnd, controlId, wParam, lParam):  
+        dir = self.anmPathEditBox.getText().strip()
+        if dir != "":
+            if os.path.isdir(dir):
+                self.anmDir = dir
+        else:
+            dialog = noewinext.NoeUserOpenFolderDialog("Choose folder with animation files")
+            self.anmDir = dialog.getOpenFolderName() 
+            if self.anmDir:
+                self.anmPathEditBox.setText(self.anmDir)
   
+        for file in os.listdir(self.anmDir):
+            if file.lower().endswith(".anm"):
+                self.animationListBox.addString(file)
+                     
+        return True     
+        
+    def buttonGetTexturePathOnClick(self, noeWnd, controlId, wParam, lParam):
+        dialog = noewinext.NoeUserOpenFolderDialog("Choose folder with texture files")
+        self.texturePathEditBox.setText(dialog.getOpenFolderName())
+        
+        return True
+        
+    def buttonLoadOnClick(self, noeWnd, controlId, wParam, lParam):    
+        filename = self.animationListBox.getStringForIndex(self.animationListBox.getSelectionIndex())
+    
+        if filename != None:
+            self.options["AnimationFile"] = os.path.join(self.anmDir, filename) 
+        
+        dir = self.texturePathEditBox.getText()
+        if os.path.isdir(dir):
+            self.options["TextureFolder"] = self.texturePathEditBox.getText()
+        
+        self.isCanceled = False
+        self.noeWnd.closeWindow()   
+
+        return True
+
+    def buttonCancelOnClick(self, noeWnd, controlId, wParam, lParam):
+        self.isCanceled = True
+        self.noeWnd.closeWindow()
+
+        return True
+
+    def create(self):
+        self.noeWnd = noewin.NoeUserWindow("Load model", "openModelWindowClass", 610, 360)
+        noeWindowRect = noewin.getNoesisWindowRect()
+
+        if noeWindowRect:
+            windowMargin = 100
+            self.noeWnd.x = noeWindowRect[0] + windowMargin
+            self.noeWnd.y = noeWindowRect[1] + windowMargin
+
+        if self.noeWnd.createWindow():
+            self.noeWnd.setFont("Arial", 14)
+
+            self.noeWnd.createStatic("Path to texture folder", 5, 5, 300, 20)
+            # 
+            index = self.noeWnd.createEditBox(5, 24, 490, 20, "", None, True)
+            self.texturePathEditBox = self.noeWnd.getControlByIndex(index)
+            
+            self.noeWnd.createButton("Open", 505, 22, 90, 22, self.buttonGetTexturePathOnClick)
+
+            self.noeWnd.createStatic("Path to .anm files", 5, 50, 300, 20)
+            # 
+            index = self.noeWnd.createEditBox(5, 70, 490, 20, "", None, True)
+            self.anmPathEditBox = self.noeWnd.getControlByIndex(index)
+            
+            self.noeWnd.createButton("Open/Load", 505, 68, 90, 22, self.buttonGetAnimationListOnClick)
+            
+            self.noeWnd.createStatic("Animations:", 5, 100, 80, 20)
+            index = self.noeWnd.createListBox(5, 120, 490, 220)
+            self.animationListBox = self.noeWnd.getControlByIndex(index)
+            
+            self.noeWnd.createButton("Load", 505, 265, 90, 30, self.buttonLoadOnClick)
+            self.noeWnd.createButton("Cancel", 505, 300, 90, 30, self.buttonCancelOnClick)
+
+            self.noeWnd.doModal()
+              
   
 def idModelCheckType(data):
 
@@ -391,7 +516,18 @@ def idModelCheckType(data):
     
 
 def idModelLoadModel(data, mdlList):
-    noesis.logPopup()
+    #noesis.logPopup()
+    path = ""
+    anmPath = ""
+    
+    if not noesis.optWasInvoked("-nogui"):
+        dialogWindow = PRSViewSettingsDialogWindow()
+        dialogWindow.create()
+    
+        if not dialogWindow.isCanceled:
+            path = dialogWindow.options["TextureFolder"]
+            anmPath = dialogWindow.options["AnimationFile"]
+        
     model = PSModel(NoeBitStream(data))
     model.read()
 
@@ -404,20 +540,22 @@ def idModelLoadModel(data, mdlList):
     mats = []
     textures = [] 
  
-    path = os.path.dirname(noesis.getSelectedFile()) + "/"        
+    if path == "":
+        path = os.path.dirname(noesis.getSelectedFile())       
 
     for index, mesh in enumerate(model.meshes): 
  
-        matName = "{} {}".format("mat", index)
-        name, _ = os.path.splitext(path + mesh.textureName)
+        matName = "{} {}".format("mat", index) 
+
+        name, _ = os.path.splitext(os.path.join(path, mesh.textureName))
 
         filename = name + ".dds"
         if not os.path.isfile(filename):
             filename = name + ".tga"
-            
+                     
         mat = NoeMaterial(matName, filename)
         rapi.rpgSetMaterial(matName) 
-      
+
         texture = rapi.loadExternalTex(filename)
 
         if texture is None:
@@ -433,9 +571,7 @@ def idModelLoadModel(data, mdlList):
    
         rapi.immBegin(noesis.RPGEO_TRIANGLE)
         bi = [bind for bind in mesh.boneIndexes if bind > -1]
-        # fi = int(mesh.faceNum / len(bi)) if len(bi) > 1 else 0
-        # indx = 0
-                
+      
         for face in model.faces[faceStartIndex: (faceStartIndex + mesh.faceNum)]:                             
             for i in range(3):
                 vIndex = face.getStorage()[i]
@@ -443,16 +579,16 @@ def idModelLoadModel(data, mdlList):
                     vIndex += mesh.vertexStartIndex                   
                 rapi.immUV2(model.vertexAttributes[vIndex].uv.getStorage())  
                 rapi.immNormal3(model.vertexAttributes[vIndex].normal.getStorage())  
-                #rapi.immColor3(model.vertexAttributes[vIndex].color.getStorage())
-                #rapi.immBoneIndex(bi)                                     
-                #rapi.immBoneWeight([1/len(bi)]*len(bi))               
-                rapi.immVertex3(model.vertexAttributes[vIndex].coordinates.getStorage())            
-            # if fi and not ((findex + 1) % fi):
-                # indx += 1    
-            # if indx == len(bi):
-                # indx = len(bi) - 1            
+                if model.type == BESIEGER_MODEL_TYPE:                    
+                    bi = [mesh.boneIndexes[index] for index in model.vertexAttributes[vIndex].boneIndexes]                                 
+                rapi.immBoneIndex(bi)
+                if model.type == BESIEGER_MODEL_TYPE:
+                    rapi.immBoneWeight(model.vertexAttributes[vIndex].weights)
+                else:               
+                    rapi.immBoneWeight(model.vertexAttributes[vIndex].weights.getStorage())               
+                rapi.immVertex3(model.vertexAttributes[vIndex].coordinates.getStorage())                       
         rapi.immEnd()       
-                           
+                         
     # show skeleton
     bones = []
     for index, bone in enumerate(model.bones):
@@ -476,34 +612,36 @@ def idModelLoadModel(data, mdlList):
 
     mdl = rapi.rpgConstructModelSlim() 
     
-    animation = IDModelAnimations()
-    #animation.load("F:\git\primal\Geometry.res\Dragon\Dragon_Cast3.ANM")
+    if anmPath:
+        animation = PRSModelAnimations()
+        animation.load(anmPath)
     
-    if animation.filename:
-        boneNames = [bone.name for bone in model.bones]
+        if animation.filename:
+            boneNames = [bone.name for bone in model.bones]
     
-        frameToTime = animation.animationLength * 1.0 / ANIM_EVAL_FRAMERATE
+            for bone in animation.boneAnimations:      
+                keyFramedBone = NoeKeyFramedBone(boneNames.index(bone.boneName))
+                rkeys = []
+                pkeys = []
+                               
+                for index, frame in enumerate(bone.frames): 
+                    if animation.type == BESIEGER_ANIMATION_TYPE:
+                        rkeys.append(NoeKeyFramedValue(index * 1.0 / ANIM_EVAL_FRAMERATE, NoeQuat(frame.rotation.getStorage()).toMat43(1).toQuat()))           
+                        pkeys.append(NoeKeyFramedValue(index * 1.0 / ANIM_EVAL_FRAMERATE, NoeVec3(frame.position.getStorage())))                
+                    else:          
+                        rkeys.append(NoeKeyFramedValue(frame.time, frame.matrix.getRotationQuat()))           
+                        pkeys.append(NoeKeyFramedValue(frame.time, NoeVec4(frame.matrix.getPosition()).toVec3()))
+
+                keyFramedBone.setRotation(rkeys)          
+                keyFramedBone.setTranslation(pkeys)
+
+                kfBones.append(keyFramedBone) 
+
+            anims.append(NoeKeyFramedAnim(animation.filename, bones, kfBones) ) 
+            mdl.setAnims(anims)   
     
-        for index, bone in enumerate(animation.boneAnimations): 
-            keyFramedBone = NoeKeyFramedBone(boneNames.index(bone.boneName))
-            rkeys = []
-            pkeys = []
-        
-            for frame in bone.frames:         
-                rkeys.append(NoeKeyFramedValue(frame.time, frame.matrix.getRotationQuat()))           
-                pkeys.append(NoeKeyFramedValue(frame.time, NoeVec4(frame.matrix.getPosition()).toVec3()))
-
-            keyFramedBone.setRotation(rkeys)          
-            keyFramedBone.setTranslation(pkeys)
-
-            kfBones.append(keyFramedBone) 
-
-        anims.append(NoeKeyFramedAnim(animation.filename, bones, kfBones) ) 
-        mdl.setAnims(anims)   
-
     mdl.setBones(bones)
-    
-    # set meshes
+   
     if mats:    
         mdl.setModelMaterials(NoeModelMaterials(textures, mats))  
         
