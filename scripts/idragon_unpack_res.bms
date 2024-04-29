@@ -3,8 +3,8 @@
 
 get FILES long
 for i = 0 < FILES
-    get NAMESZ long
-    getdstring NAME NAMESZ
+    get length long
+    getdstring NAME length
     get OFFSET long
     get SIZE long
     log NAME OFFSET SIZE
