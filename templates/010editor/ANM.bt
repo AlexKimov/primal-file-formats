@@ -11,6 +11,14 @@
 //   History: 
 //------------------------------------------------
 
+FSeek(0);
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+  FLOAT Z;
+} VECTOR_3F;
+
 typedef struct {
   FLOAT X;
   FLOAT Y;
@@ -26,37 +34,62 @@ typedef struct {
 } MATRIX_4x4;
 
 UINT size;
-UINT U;
-UINT U;
-UINT U;
-UINT U;
 
-UINT BoneCount;
+if (size == 537068832) {
+  float time;
+  uint boneNum;
 
-FLOAT Time;
-FLOAT U;
-FLOAT U;
-FLOAT U;
-FLOAT U;
-FLOAT U;
-FLOAT U;
-
-struct {
-  UINT Unknown;
-  FLOAT Unknown;
-  UINT FrameCount;
-
-  UINT Length;
-  CHAR BoneName[Length];
-  UINT Length;
-  CHAR ParentName[Length];
-  
   struct {
-    FLOAT Time;
-    MATRIX_4x4 MatrixG;
-    FLOAT U[11];
-  } FRAME[FrameCount];
-} BONE[BoneCount] <optimize=false>;
+    uint length;
+    char bonename[length];
 
-UINT Count;
-CHAR Name[Count];
+    int parentIndex;
+    uint unknown;
+    uint frameNum;
+  
+    struct {
+      VECTOR_4F rotation;
+
+      VECTOR_3F pos;
+
+    } frame[frameNum];
+  } bone[boneNum] <optimize=false>;
+
+  uint length;
+  char name[length];
+} else {
+  UINT U;
+  UINT U;
+  UINT U;
+  UINT U;
+
+  UINT BoneCount;
+
+  FLOAT Time;  
+  FLOAT U;
+  FLOAT U;
+  FLOAT U;
+  FLOAT U;
+  FLOAT U;
+  FLOAT U;
+
+  struct {
+    UINT Unknown;
+    FLOAT Unknown;
+    UINT FrameCount;
+
+    UINT Length;
+    CHAR BoneName[Length];
+    UINT Length;
+    CHAR ParentName[Length];
+  
+   struct {
+      FLOAT Time;
+      MATRIX_4x4 MatrixG;
+      FLOAT U[11];
+    } FRAME[FrameCount];
+  } BONE[BoneCount] <optimize=false>;
+
+  UINT Count;
+  CHAR Name[Count];
+}

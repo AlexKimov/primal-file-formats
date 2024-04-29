@@ -13,22 +13,25 @@
 
 uchar magic[12];
 uint unk;
-uint unk2;
+uint size;
 uint unk;
 uint unk;
 
-switch (unk2)
+if (size == 8)
 {
-  case 10:
-    byte data0[256*256*21/2];
-    byte data1[256*256*32];
-    byte data2[1572872];
-    byte data3[496496];
-  break;
-  case 11:
-    byte data0[256*256*85/2];
-    byte data1[8388608];
-    byte data2[6291464];
-    byte data3[496496];
-  break;
+
 }
+
+if (size == 10)
+{
+  struct {
+    byte image1[256*256 >> 1];
+  } tile_dxt1[85];
+  byte detailTextureIndex[1572872];
+  byte detailTextureDXT1[FileSize() - 4358182];
+}
+
+if (size == 11)
+struct {
+  byte image1[256*256 >> 1];
+} tile_dxt1[341];

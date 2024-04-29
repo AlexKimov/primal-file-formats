@@ -11,6 +11,30 @@
 //   History: 
 //------------------------------------------------
 
+typedef struct {
+  UINT16 X;
+  UINT16 Y;
+  UINT16 Z;
+} VECTOR_3UI16;
+
+typedef struct {
+  FLOAT X;
+  FLOAT Y;
+  FLOAT Z;
+} VECTOR_3F;
+
+typedef struct {
+  UBYTE X;
+  UBYTE Y;
+  UBYTE Z;
+  UBYTE W;
+} VECTOR_4B;
+
+typedef struct {
+  FLOAT u;
+  FLOAT v;
+} VECTOR_2F;
+
 uint a;
 uint b; 
 float c[12];
@@ -18,16 +42,19 @@ float c[12];
 uint num;
 
 struct {
-  float bb[10]; 
-} vertex[num];
+  VECTOR_3F coordinates;
+  FLOAT boneWeihgt;
+  if (boneWeihgt < 1 && boneWeihgt > 0.5)
+      Printf("%f ", boneWeihgt); 
+  VECTOR_4B boneIndexes;
+  VECTOR_3F normal;
+  VECTOR_2F uv;
+} vertex[num] <optimize=false>;
 
 uint size;
 local float fNum = size / 3;
 struct {
   uint16 index[3]; 
-
-  if (index[2] > 8790)
-      Printf("%d ", index[0]);
 } face[fNum] <optimize=false>;
 
 local uint is;
@@ -49,8 +76,8 @@ struct {
   uint length;
   char name[length];
   int parentIndex;
-  float a[16];
-  float b[16];
+  float matrix1[16];
+  float matrix2[16];
 } bone[num] <optimize = false>;
 
 uint size;
