@@ -43,13 +43,15 @@ typedef struct {
 } VECTOR_2F;
 
   UINT Offset;
+  UINT Magic;
   UINT Unknown;
   UINT Unknown;
   UINT Unknown;
-  UINT Unknown;
-  UINT U;
+  UINT U10;
+  if (Offset != 88)
   UINT Unknow;
-  UINT FaceCount;
+  if (Magic != 536937233)
+    UINT FaceCount;
 
   VECTOR_3F Coordinates;
   VECTOR_3F Coordinates;
@@ -60,21 +62,28 @@ typedef struct {
   UINT IndexCount;
   UINT MeshCount;
   UINT boneCount;
-  UINT U;
-  UINT U;
-  UINT LastSectionSize;
+
+  if (Magic != 536937233) {
+    UINT U1;
+    UINT U2;
+    UINT LastSectionSize;
+  }
 
 struct {
   VECTOR_3F Coordinates;
+  VECTOR_3F Weight;
   VECTOR_3F Normal;
-  VECTOR_3F Color;
   VECTOR_2F UV;
 } VERTEX[VertexCount];
 
+  if (Magic == 536937233)
+struct {
+  UINT16 Index;
+} Indexes[IndexCount];
+else 
 struct {
   VECTOR_3UI16 Index;
 } FACE[FaceCount];
-
 
 struct {
   UINT Size;
@@ -90,6 +99,7 @@ struct {
   INT boneIndex;
   INT boneIndex;
   INT boneIndex;
+  if (Magic != 536937233)
   INT boneIndex;
 
   UINT Length;
@@ -104,6 +114,7 @@ struct {
   CHAR Name[Length]; 
 } BONE[boneCount] <optimize=false>;
 
+  if (Magic != 536937233) {
 UINT Count0;
 
 struct {
@@ -123,6 +134,7 @@ struct {
     } K[Count0];
   } I3[Count] <optimize=false>;
 } Ue[Count0] <optimize=false>;
+}
 
 UINT Count;
 CHAR Name[Count];

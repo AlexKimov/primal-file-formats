@@ -66,15 +66,19 @@ if (size == 537068832) {
   UINT BoneCount;
 
   FLOAT Time;  
-  FLOAT U;
-  FLOAT U;
-  FLOAT U;
-  FLOAT U;
-  FLOAT U;
-  FLOAT U;
+
+  if (size > 28)
+  {FLOAT U;
+    FLOAT U;
+    FLOAT U;
+    FLOAT U;
+    FLOAT U;
+    FLOAT U;
+  };
 
   struct {
     UINT Unknown;
+    if (size > 28)
     FLOAT Unknown;
     UINT FrameCount;
 

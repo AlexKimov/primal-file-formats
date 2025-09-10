@@ -25,7 +25,7 @@ uint16 size;
 uint16 pnumber;
 uint16 unk;
 local int points = pnumber;
-byte heightmap_16bit[points*points*2];
+uint16 heightmap_16bit[points*points];
 uint code;
 
 uint code;
@@ -36,12 +36,12 @@ struct {
   while (w <= (Pow(2, power)/8))
   {
      struct {
-       byte image[w*h];
+       ubyte image[w*h];
      } MIP;
      w = w*2;
      h = h*2;
   };
-} MIP_MAPS;
+} LOD_MIP_MAPS;
 
 uint code;
 

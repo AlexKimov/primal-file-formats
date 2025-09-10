@@ -11,27 +11,33 @@
 //   History: 
 //------------------------------------------------
 
+local uint i, z;
+
 uchar magic[12];
 uint unk;
 uint size;
-uint unk;
-uint unk;
+uint unk2;
+uint unk00;
 
-if (size == 8)
-{
-
-}
-
-if (size == 10)
-{
-  struct {
-    byte image1[256*256 >> 1];
-  } tile_dxt1[85];
-  byte detailTextureIndex[1572872];
-  byte detailTextureDXT1[FileSize() - 4358182];
-}
-
-if (size == 11)
+if (!unk2)
 struct {
-  byte image1[256*256 >> 1];
-} tile_dxt1[341];
+    for (i = 0; i < (size - unk00); ++i) {
+     struct {  
+       byte tilesData[(256 * (1 << i) * 256 * (1 << i)) >> 1];
+     } tileset;
+   }
+} tiles_detail_nearplane_dxt1;
+
+UINT a;
+UINT tileNum;
+byte Indexes[(3 * (1 << (size - unk2)) * (1 << (size - unk2))) >> 1];
+
+struct {
+    for (i = 2; i <= 6; ++i) {
+      struct {
+         struct {           
+           byte tileData[((1 << i) * (1 << i)) >> 1];
+         } tile[tileNum];
+      } tileset;
+    }
+} iles_detail_farplane_dxt1;

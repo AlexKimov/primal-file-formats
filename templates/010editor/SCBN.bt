@@ -12,14 +12,15 @@
 //------------------------------------------------
 
 struct vector3f {
-  float length;
-  float length;
-  float length;
+  float x;
+  float y;
+  float z;
 };
 struct vector4f {
-  float length;
-  float length;
-  float length;
+  float x;
+  float y;
+  float z;
+  float w;
 };
 struct object {
   uint length;
@@ -28,11 +29,11 @@ struct object {
 struct instance {
   uint objIndex;
   vector3f pos;
-  vector3f orientation;
+  vector4f orientation;
 };
 
 uint objNum;
 object Obj[objNum] <optimize=false>;
 
 uint instNum;
-instance inst[objNum] <optimize=false>;
+instance inst[instNum] <optimize=false>;
