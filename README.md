@@ -2,7 +2,7 @@
 
 Форматы файлов и инструменты для игр от Primal Software. Описание форматов в виде шаблонов для 16ричного редактора.  
 
-[![](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/CXuRvvKt6m)
+[Blender plugin](https://github.com/XenonBaruku/IDragon-Blender-Tools)
 
 ### Краткое введение в форматы файлов
 
@@ -24,12 +24,13 @@
    См. ([ссылка](#задачи)) . Планов как таковых нет, но вы можете поучаствовать и сделать все, что вам нужно, самостоятельно. 
 2. Как распаковать и запаковать архивы игры .res?  
     * Использовать плагин для Noesis ([ссылка](#noesis)).   
-    * Использовать скрипт для Quickbms ([ссылка](#quickbms)). Только распаковка.  
+    * Использовать скрипт для Quickbms ([ссылка](#quickbms)). Только распаковка.
+    * Или python скрипты ([ссылка](#python)).
 3. Как достать модели из игры Глаз Дракона? Как вытащить модели из игры Осада? Как получить модель Волкодава? Как открыть файл .msh?  
-   * Использовать плагин для Blender ([ссылка](#blender)). Поддерживаются старые версии программы, данные для анимации на данный момент не считываются.    
+   * Использовать плагин для Blender ([ссылка]([#blender](https://github.com/XenonBaruku/IDragon-Blender-Tools))). 
    * Использовать плагин для Noesis ([ссылка](#noesis)). Считываются все данные и отображаются анимации.    
 4. Как открыть, изменить файлы .city, .dsc, .dat, .fir и другие?  
-   Использовать скрипт для 010Editor ([ссылка](#010editor)).   
+   Использовать скрипт для 010Editor ([ссылка](#010editor)).  
 
 ### Задачи
 
@@ -98,11 +99,16 @@
     
 ## Инструменты
 
+#### python
+| № | Скрипт | Описание  |
+| :-- | :------- | :-------  | 
+|  **1**  | [process_res.py](scripts/process_res.py)  | Распаковка, запаковка файлов .res Глаз Дракона (2002) и Осада (2004) и Волкодав Месть Серого Пса |
+
 #### 010editor
 
 | № | Скрипт | Описание  |
 | :-- | :------- | :-------  | 
-|  **1**  | [Decipher_dat_dsc.1sc](scripts/Decipher_dat_dsc.1sc)  | Расшифровка/Зашифровка текстовых файлов игры Глаз Дракона (2002) и Осада (2004) |
+|  **1**  | [Decipher_dat_dsc.1sc](scripts/Decipher_dat_dsc.1sc)  | Расшифровка/Зашифровка текстовых файлов игры Глаз Дракона (2002) и Осада (2004)  |
 
 Текстовые файлы в игре зашифрованы с помощью xorа, к ним относятся файлы с расширением .dat, .dsc, .city, .fir, .are. Скрипт позволяет их расшифровать и зашифровать обратно (повторить скрипт на расшифрованном файле).
 
@@ -115,7 +121,7 @@
 
 | № | Плагин | Описание   | Статус |
 | :-- | :------- | :-------  | :-------  | 
-|  **1**  | [__init__.py](plugins/blender/io_scene_idragon_mesh/__init__.py)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) и Осада (2004) | +модели +текстуры |
+|  **1**  | [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) и Осада (2004) | +модели +текстуры |
 
     Как установить плагин Blender
     0. Найти в интернете "как установить плагин для Blender". Здесь дальше не читать.
@@ -175,7 +181,7 @@ File formats and tools for games by Primal Software.
 
 | № | Plugin | Description   |
 | :-- | :------- | :-------  | 
-|  **1**  | [_init__.py](https://github.com/AlexKimov/primal-file-formats/blob/master/plugins/blender/io_scene_idragon_mesh/__init__.py)  | Plugin to open mesh files |
+|  **1**  | [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools)   | Plugin to open mesh files |
 
     How to:
     1. Install Blender (~3.3).
