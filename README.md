@@ -104,6 +104,9 @@
 | :-- | :------- | :-------  | 
 |  **1**  | [process_res.py](scripts/process_res.py)  | Распаковка, запаковка файлов .res Глаз Дракона (2002) и Осада (2004) и Волкодав Месть Серого Пса |
 
+    process_res.py unpack -i "res_files1" -o "extracted_files2" - для распаковки, пути указать свои, 1 - путь к папке с файлами .res, 2 - папка для распакованных файлов (каждый .res распаковывается в свою папку)
+    process_res.py pack -i "extracted_files1" -o "res_files1" - запаковка, пути указать свои, 1 - папка для распакованных файлов (должна содержать папки внутри которых будут файлы для запаковки), 2 - папка для полученных файлов .res 
+
 #### 010editor
 
 | № | Скрипт | Описание  |
@@ -170,6 +173,14 @@ File formats and tools for games by Primal Software.
 |  **2**  | ANM | [ANM.bt](https://github.com/AlexKimov/primal-file-formats/blob/master/templates/010editor/ANM.bt)  | animations | 
 
 ## Tools
+
+**#### python
+| № | Скрипт | Описание  |
+| :-- | :------- | :-------  | 
+|  **1**  | [process_res.py](scripts/process_res.py)  | Pack, unpack .res files |
+
+    process_res.py unpack -i "res_files1" -o "extracted_files2"  
+    process_res.py pack -i "extracted_files1" -o "res_files1" 
 
 #### QuickBMS 
 
