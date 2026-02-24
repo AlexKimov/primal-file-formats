@@ -25,7 +25,7 @@ uint16 size;
 uint16 pnumber;
 uint16 unk;
 local int points = pnumber;
-uint16 heightmap_16bit[points*points];
+int16 heightmap_16bit[points*points];
 uint code;
 
 uint code;
@@ -49,5 +49,5 @@ uint code;
 uint16 unk;
 uint16 unk2;
 local int upoints = unk2;
-byte data2[upoints*upoints];  
+byte surfaceRoughnessMap[upoints*upoints];  
 uint code;
