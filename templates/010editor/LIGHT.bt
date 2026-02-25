@@ -11,62 +11,59 @@
 //   History: 
 //------------------------------------------------
 
-uchar magic[10];
+uchar magic[11];
 uint unk;
-uint unk;
-uint unk;
-uint unk;
+uint unk0;
+uint unk3;
+uint format;
 
-uint size;
-
-if (size == 256){
-  byte unk3[3];
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-} else {
-  byte unk3[3];
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk; 
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk; 
-  uint unk;
-  uint unk;
-}
-
-  uint16 unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
-  uint unk;
+uint unk4;
 
 struct {
-  uint size;
-} image[273];
+  float a;
+  float a;
+  float a;
+  float a;
+} b[unk4];
 
-// 273
+uint unk;
+uint unk;
+uint unk;
+uint unk;
+uint unk;
+uint unk;
+
+uint unk1;
+uint unk2;
+
+
+local uint num1 = unk4 * unk3 * unk3;
+local uint num2 = unk4 * (unk3 * (unk0 - 2) / unk1 + 1) * (unk3 * (unk0 - 2) / unk2 + 1);
+
+uint size[num1];
+uint size1;
+uint a2[num2];
 
 local uint i;
-for (i = 0; i < 273; ++i)
+
 struct {
-  uint code;
-  byte header[17];
-  uint16 code;
-  byte header2[10];
-  byte d[image[i].size - 35];
-  uint16 code;
-} A;
+    for (i = 0; i < num1; ++i) 
+    {
+        struct {
+           byte data[size[i]];
+        } JPEG;
+   }
+} JPEGS;
+
+struct {
+    byte data[size1];
+} JPEG;
+
+struct {
+    for (i = 0; i < num2; ++i) 
+    {
+        struct {
+           byte data[a2[i]];
+        } JPEG;
+   }
+} JPEGS2;
