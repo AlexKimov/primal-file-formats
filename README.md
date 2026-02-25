@@ -2,7 +2,7 @@
 
 Форматы файлов и инструменты для игр от Primal Software. Описание форматов в виде шаблонов для 16ричного редактора.  
 
-[Blender plugin](https://github.com/XenonBaruku/IDragon-Blender-Tools)
+Плагин для Бледер можно скачать здесь [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools)
 
 ### Краткое введение в форматы файлов
 
@@ -122,7 +122,8 @@
 
 | № | Плагин | Описание   | Статус |
 | :-- | :------- | :-------  | :-------  | 
-|  **1**  | [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) и Осада (2004) | +модели +текстуры |
+|  **1**  | [IDragon-Blender-Tools](https://github.com/XenonBaruku/IDragon-Blender-Tools)  | Просмотр файлов моделей mesh игры Глаз Дракона (2002) и Осада (2004) | +модели +текстуры |
+|  **1**  | [io_mesh_land](plugins/blender/io_mesh_land/__init__.py)  | Просмотр карты высот из игр Глаз Дракона (2002) и Осада (2004) |  |
 
     Как установить плагин Blender
     0. Найти в интернете "как установить плагин для Blender". Здесь дальше не читать.
