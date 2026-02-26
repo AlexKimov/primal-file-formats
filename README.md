@@ -2,7 +2,8 @@
 
 Форматы файлов и инструменты для игр от Primal Software. Описание форматов в виде шаблонов для 16ричного редактора.  
 
-Плагин для Бледер можно скачать здесь [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools)
+**Blender**     
+Плагин для [Blender](https://github.com/XenonBaruku/IDragon-Blender-Tools) . Загружает модели и текстуры к ним, а также анимации моделей.
 
 ### Краткое введение в форматы файлов
 
