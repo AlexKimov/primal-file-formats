@@ -11,34 +11,50 @@
 //   History: 
 //------------------------------------------------
 
+typedef enum _IJL_JPGSUBSAMPLING
+{
+  IJL_NONE    = 0,    /* Corresponds to "No Subsampling". */
+                      /* Valid on a JPEG w/ any number of channels. */
+  IJL_411     = 1,    /* Valid on a JPEG w/ 3 channels. */
+  IJL_422     = 2,    /* Valid on a JPEG w/ 3 channels. */
+
+  IJL_4114    = 3,    /* Valid on a JPEG w/ 4 channels. */
+  IJL_4224    = 4     /* Valid on a JPEG w/ 4 channels. */
+
+} IJL_JPGSUBSAMPLING;
+
+typedef enum _D3DFORMAT {
+    D3DFMT_A8R8G8B8             = 21
+} D3DFORMAT;
+
 uchar magic[11];
 uint unk;
-uint unk0;
+uint tileNumber;
 uint unk3;
-uint format;
+D3DFORMAT format;
 
-uint unk4;
+uint dayParts;
 
 struct {
-  float a;
-  float a;
-  float a;
-  float a;
-} b[unk4];
+  float x;
+  float y;
+  float z;
+  float w;
+} position[dayParts];
 
-uint unk;
-uint unk;
-uint unk;
-uint unk;
-uint unk;
-uint unk;
+IJL_JPGSUBSAMPLING subsampling1;
+uint jquality1;
+IJL_JPGSUBSAMPLING subsampling2;
+uint jquality2;
+IJL_JPGSUBSAMPLING subsampling2;
+uint jquality3;
 
 uint unk1;
 uint unk2;
 
 
-local uint num1 = unk4 * unk3 * unk3;
-local uint num2 = unk4 * (unk3 * (unk0 - 2) / unk1 + 1) * (unk3 * (unk0 - 2) / unk2 + 1);
+local uint num1 = dayParts * unk3 * unk3;
+local uint num2 = dayParts * (unk3 * (tileNumber - 2) / unk1 + 1) * (unk3 * (tileNumber - 2) / unk2 + 1);
 
 uint size[num1];
 uint size1;
