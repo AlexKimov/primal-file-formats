@@ -128,6 +128,13 @@
     2. Применить скрипт через меню Script-Run script. 
 
 ### Плагины
+
+#### notepad++
+
+| № | Плагин | Описание   | 
+| :-- | :------- | :-------  | 
+|  **1**  | [NppPluginPRSFilePlugin.dll](plugins/notepad\+\+/NppPluginPRSFilePlugin.dll)  | Открытие, сохрание зашифрованных файлов .city, .dsc, .dat, .fir  | 
+
 #### Blender
 
 | № | Плагин | Описание   | Статус |
