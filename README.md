@@ -33,7 +33,7 @@
    * Использовать плагин для Blender ([ссылка]([#blender](https://github.com/XenonBaruku/IDragon-Blender-Tools))). 
    * Использовать плагин для Noesis ([ссылка](#noesis)). Считываются все данные и отображаются анимации.    
 4. Как открыть, изменить файлы .city, .dsc, .dat, .fir и другие?  
-   Использовать скрипт для 010Editor ([ссылка](#010editor)).  
+   Использовать скрипт для 010Editor ([ссылка](#010editor)) или плагин для notepad++ ([ссылка](https://www.moddb.com/games/the-i-of-the-dragon/downloads/notepad-plugin-for-text-files)).  
 5. Как открыть, изменить файлы локаций (.light, .land)?  
    Использовать скрипт для Blender ([ссылка](#blender)) и программы ([ссылка]((/tools/)). 
 
