@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Script File
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+//   History: 
+//------------------------------------------------
+
+local char key[8]="GBDFYTNE";
+local uint i, k, num, len, s;
+local ubyte b;
+
+
+num = ReadUInt(12);
+
+FSeek(16);
+do
+{
+  k = 0;
+  FSkip(4);
+  len = ReadUInt(FTell());
+  FSkip(4);
+  for (i = 0; i < len; ++i) {
+    b = ReadByte(FTell());
+    WriteByte(FTell(), key[k] ^ b);
+    FSkip(1);
+    ++k;
+    if (k == 8) k = 0; 
+  };
+  FSkip(8); 
+
+  s += 1;
+} while (s < num);
