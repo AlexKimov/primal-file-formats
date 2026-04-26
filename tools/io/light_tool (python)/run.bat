@@ -1,0 +1,1 @@
+python light_jpegs_extractor.py "F:/Games/TheIOfTheDragon/Data/Areas/Wonderland/Wonderland.light" output/
